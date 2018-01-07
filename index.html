@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Old Savannah Neighborhood Map</title>
+        <meta name="description" content="A map of interesting restaraunts and sites in Savannah, GA">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <link rel="stylesheet" href="styles/normalize.css"> -->
+        <link rel="stylesheet" href="styles/app.css">
+    </head>
+    <body>
+      <header>
+        <h1 class="header__heading">Old Savannah Neighborhood Map</h1>
+      </header>
+      <main>
+        <div id="sidebar"></div>
+        <div id="map"></div>
+      </main>
+      <script>
+        var map;
+        function initMap() {
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 32.076, lng: -81.093},
+            zoom: 16
+          });
+        }
+
+      </script>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&callback=initMap"
+    async defer></script>
+    <!--
+      <script src="vendor/scripts/jquery-3.2.1.min.js"></script>
+      <script src="vendor/scripts/knockout-3.4.2.js"></script>
+      <script src="scripts/app.js"></script>
+    -->
+    </body>
+</html>
+
