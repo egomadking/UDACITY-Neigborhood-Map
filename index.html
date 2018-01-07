@@ -6,16 +6,44 @@
         <title>Old Savannah Neighborhood Map</title>
         <meta name="description" content="A map of interesting restaraunts and sites in Savannah, GA">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- <link rel="stylesheet" href="styles/normalize.css"> -->
+        <link rel="stylesheet" href="styles/normalize.css">
         <link rel="stylesheet" href="styles/app.css">
+        <link rel="stylesheet" href="https:/cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
       <header>
-        <h1 class="header__heading">Old Savannah Neighborhood Map</h1>
+        <div class="l-header__hamburger">
+          <button class="c-header__hamburger c-header__hamburger--is-toggled"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button></div>
+          <!-- toggle button: <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+        <h1 class="c-header__heading">Old Savannah Neighborhood Map</h1>
       </header>
       <main>
-        <div id="sidebar"></div>
-        <div id="map"></div>
+        <div class="l-sidebar l-sidebar--is-toggled">
+
+          <div class="l-sidebar__search l-sidebar__search--is-toggled">
+            <form>
+              <input type="text" class="c-sidebar__search-field" placeholder="Search for location">
+              <button type="submit" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form>
+          </div>
+          <div class="l-sidebar__results l-sidebar__results--is-toggled">
+            <ul class="c-sidebar__results">
+              <li class="c-sidebar__results__entry ">Location 1</li>
+              <li class="c-sidebar__results__entry ">Location 2</li>
+              <li class="c-sidebar__results__entry ">Location 3</li>
+              <li class="c-sidebar__results__entry ">Location 4</li>
+              <li class="c-sidebar__results__entry ">Location 5</li>
+              <li class="c-sidebar__results__entry ">Location 1</li>
+              <li class="c-sidebar__results__entry ">Location 2</li>
+              <li class="c-sidebar__results__entry ">Location 3</li>
+              <li class="c-sidebar__results__entry ">Location 4</li>
+              <li class="c-sidebar__results__entry ">Location 5</li>
+              <li class="c-sidebar__results__entry ">Location 2</li>
+              <li class="c-sidebar__results__entry ">Location 3</li>
+            </ul>
+          </div>
+        </div>
+        <div id="map" class="c-map"></div>
       </main>
       <script>
         var map;
@@ -29,11 +57,9 @@
       </script>
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&callback=initMap"
     async defer></script>
-    <!--
-      <script src="vendor/scripts/jquery-3.2.1.min.js"></script>
-      <script src="vendor/scripts/knockout-3.4.2.js"></script>
+      <script src="scripts/vendor/jquery-3.2.1.min.js"></script>
+      <script src="scripts/vendor/knockout-3.4.2.js"></script>
       <script src="scripts/app.js"></script>
-    -->
     </body>
 </html>
 
