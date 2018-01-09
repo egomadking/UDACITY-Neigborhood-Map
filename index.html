@@ -13,20 +13,20 @@
     <body>
       <header>
         <div class="l-header__hamburger">
-          <button class="c-header__hamburger c-header__hamburger--is-toggled"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button></div>
-          <!-- toggle button: <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+          <button class="c-header__hamburger" data-bind="click: toggleSidebarActive, css : {'c-header__hamburger--is-toggled' : isSidebarActive}"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button></div>
+          <!-- data-bind="css : {'l-sidebar__results--is-toggled': isSidebarActive}" -->
         <h1 class="c-header__heading">Old Savannah Neighborhood Map</h1>
       </header>
       <main>
-        <div class="l-sidebar l-sidebar--is-toggled">
+        <div class="l-sidebar" data-bind="css : {'l-sidebar--is-toggled': isSidebarActive}">
 
-          <div class="l-sidebar__search l-sidebar__search--is-toggled">
+          <div class="l-sidebar__search" data-bind="css : {'l-sidebar__search--is-toggled': isSidebarActive}">
             <form>
               <input type="text" class="c-sidebar__search-field" placeholder="Search for location">
               <button type="submit" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </form>
           </div>
-          <div class="l-sidebar__results l-sidebar__results--is-toggled">
+          <div class="l-sidebar__results" data-bind="css : {'l-sidebar__results--is-toggled': isSidebarActive}">
             <ul class="c-sidebar__results">
               <li class="c-sidebar__results__entry ">Location 1</li>
               <li class="c-sidebar__results__entry ">Location 2</li>
