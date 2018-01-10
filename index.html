@@ -19,7 +19,13 @@
       </header>
       <main>
         <div class="l-sidebar" data-bind="css : {'l-sidebar--is-toggled': isSidebarActive}">
-
+          <div class="l-sidebar__filter">
+            <ul class="c-sidebar__filter">
+              <li class="c-sidebar__filter__toggle"><img src="assets/dinner.svg"></li>
+              <li class="c-sidebar__filter__toggle"><img src="assets/coffee.svg"></li>
+              <li class="c-sidebar__filter__toggle"><img src="assets/dessert.svg"></li>
+            </ul>
+          </div>
           <div class="l-sidebar__search" data-bind="css : {'l-sidebar__search--is-toggled': isSidebarActive}">
             <form>
               <input type="text" class="c-sidebar__search-field" placeholder="Search for location">
@@ -27,19 +33,8 @@
             </form>
           </div>
           <div class="l-sidebar__results" data-bind="css : {'l-sidebar__results--is-toggled': isSidebarActive}">
-            <ul class="c-sidebar__results">
+            <ul class="c-sidebar__results" data-bind="for-each: entry"> <!-- I left off here -->
               <li class="c-sidebar__results__entry ">Location 1</li>
-              <li class="c-sidebar__results__entry ">Location 2</li>
-              <li class="c-sidebar__results__entry ">Location 3</li>
-              <li class="c-sidebar__results__entry ">Location 4</li>
-              <li class="c-sidebar__results__entry ">Location 5</li>
-              <li class="c-sidebar__results__entry ">Location 1</li>
-              <li class="c-sidebar__results__entry ">Location 2</li>
-              <li class="c-sidebar__results__entry ">Location 3</li>
-              <li class="c-sidebar__results__entry ">Location 4</li>
-              <li class="c-sidebar__results__entry ">Location 5</li>
-              <li class="c-sidebar__results__entry ">Location 2</li>
-              <li class="c-sidebar__results__entry ">Location 3</li>
             </ul>
           </div>
         </div>

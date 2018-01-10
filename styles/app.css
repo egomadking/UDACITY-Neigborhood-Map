@@ -48,6 +48,22 @@ main {
   width: 300px;
 }
 
+.c-sidebar__filter {
+  display: flex;
+  list-style: none;
+  margin: 15px 0 5px 0;
+  padding: 0 20px;
+}
+
+.c-sidebar__filter__toggle {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.c-sidebar__filter__toggle > img {
+  width: 45px;
+}
+
 form {
   font-size: 1.5em;
   display: flex;
