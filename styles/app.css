@@ -136,8 +136,13 @@ form {
   }
 
   .l-sidebar--is-toggled {
-    width: 2em;
+    width: 1em;
     transition-duration: 150ms;
+  }
+
+  .l-sidebar__search {
+    opacity: 100;
+    transition-duration: 500ms;
   }
 
   .l-sidebar__search--is-toggled {
@@ -152,6 +157,8 @@ form {
   
   .l-sidebar__results {
     margin: .3em;
+    opacity: 100;
+    transition-duration: 500ms;
   }
 
   .l-sidebar__results--is-toggled {
