@@ -20,15 +20,13 @@
       <main>
         <div class="l-sidebar" data-bind="css : {'l-sidebar--is-toggled': isSidebarActive}">
           <div class="l-sidebar__filter">
-            <ul class="c-sidebar__filter">
-              <li class="c-sidebar__filter__toggle"><img src="assets/dinner.svg"></li>
-              <li class="c-sidebar__filter__toggle"><img src="assets/coffee.svg"></li>
-              <li class="c-sidebar__filter__toggle"><img src="assets/dessert.svg"></li>
-            </ul>
+              <button type="submit" class="c-sidebar__filter__toggle"><img src="assets/dinner.svg"></button>
+              <button type="submit" class="c-sidebar__filter__toggle"><img src="assets/coffee.svg"></button>
+              <button type="submit" class="c-sidebar__filter__toggle"><img src="assets/dessert.svg"></button>
           </div>
           <div class="l-sidebar__search" data-bind="css : {'l-sidebar__search--is-toggled': isSidebarActive}">
             <form>
-              <input type="text" class="c-sidebar__search-field" placeholder="Search for location">
+              <input type="text" class="c-sidebar__search-field" placeholder="Search within listed items">
               <button type="submit" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </form>
           </div>
@@ -36,6 +34,14 @@
             <ul class="c-sidebar__results" data-bind="for-each: entry"> <!-- I left off here -->
               <li class="c-sidebar__results__entry ">Location 1</li>
             </ul>
+            <!-- in my back pocket if the arrays don't stack
+            <ul class="c-sidebar__results" data-bind="for-each: entry">
+              <li class="c-sidebar__results__entry ">Location 1</li>
+            </ul>
+            <ul class="c-sidebar__results" data-bind="for-each: entry">
+              <li class="c-sidebar__results__entry ">Location 1</li>
+            </ul>
+            -->
           </div>
         </div>
         <div id="map" class="c-map"></div>
@@ -47,6 +53,7 @@
             center: {lat: 32.068, lng: -81.093},
             zoom: 15
           });
+          //var geocoder = new google.maps.Geocoder();
         }
 
       </script>
