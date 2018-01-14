@@ -14,46 +14,60 @@
       <header>
         <div class="l-header__hamburger">
           <button class="c-header__hamburger" data-bind="click: toggleSidebarActive, css : {'c-header__hamburger--is-toggled' : isSidebarActive}"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button></div>
-          <!-- data-bind="css : {'l-sidebar__results--is-toggled': isSidebarActive}" -->
         <h1 class="c-header__heading">Old Savannah Neighborhood Map</h1>
       </header>
       <main>
         <div class="l-sidebar" data-bind="css : {'l-sidebar--is-toggled': isSidebarActive}">
           <div class="l-sidebar__filter">
-              <button type="submit" class="c-sidebar__filter__toggle"><img src="assets/dinner.svg"></button>
-              <button type="submit" class="c-sidebar__filter__toggle"><img src="assets/coffee.svg"></button>
-              <button type="submit" class="c-sidebar__filter__toggle"><img src="assets/dessert.svg"></button>
+              <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleDiningFilter"><img src="assets/dinner.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showDining() === false}"></button>
+              <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleCafeFilter"><img src="assets/coffee.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showCafe() === false}"></button>
+              <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleDessertFilter"><img src="assets/dessert.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showDessert() === false}"></button>
           </div>
           <div class="l-sidebar__search" data-bind="css : {'l-sidebar__search--is-toggled': isSidebarActive}">
             <form>
               <input type="text" class="c-sidebar__search-field" placeholder="Search within listed items">
-              <button type="submit" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-            </form>
+              <button type="button" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form> <!-- still need to work with the search -->
           </div>
-          <div class="l-sidebar__results" data-bind="css : {'l-sidebar__results--is-toggled': isSidebarActive}">
-            <ul class="c-sidebar__results" data-bind="for-each: entry"> <!-- I left off here -->
-              <li class="c-sidebar__results__entry ">Location 1</li>
+          <div class="l-sidebar__results" >
+
+            <ul class="c-sidebar__results" data-bind="foreach: staticDining">
+              <li class="c-sidebar__results__entry" data-bind="visible: $parent.showDining">
+                <a href="#" data-bind="text: name"></a>
+              </li>
             </ul>
-            <!-- in my back pocket if the arrays don't stack
-            <ul class="c-sidebar__results" data-bind="for-each: entry">
-              <li class="c-sidebar__results__entry ">Location 1</li>
+            <ul class="c-sidebar__results" data-bind="foreach: staticCafe">
+              <li class="c-sidebar__results__entry" data-bind="visible: $parent.showCafe">
+                  <a href="#" data-bind="text: name"></a>
+              </li>
             </ul>
-            <ul class="c-sidebar__results" data-bind="for-each: entry">
-              <li class="c-sidebar__results__entry ">Location 1</li>
+            <ul class="c-sidebar__results" data-bind="foreach: staticDessert">
+              <li class="c-sidebar__results__entry" data-bind="visible: $parent.showDessert">
+                  <a href="#" data-bind="text: name"></a>
+              </li>
             </ul>
-            -->
+            
+            <!-- <ul class="c-sidebar__results" data-bind="foreach: staticPoints">
+              <li class="c-sidebar__results__entry" data-bind="text: name, css: type"></li>
+            </ul> -->
           </div>
+          
+          
         </div>
         <div id="map" class="c-map"></div>
       </main>
       <script>
         var map;
         function initMap() {
+          var originalMapCenter = new google.maps.LatLng(32.068, -81.093);
           map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 32.068, lng: -81.093},
+            center: originalMapCenter,
             zoom: 15
           });
           //var geocoder = new google.maps.Geocoder();
+          map.addListener('click', function() {
+            map.panTo(originalMapCenter);
+          });
         }
 
       </script>
@@ -61,7 +75,7 @@
     async defer></script>
       <script src="scripts/vendor/jquery-3.2.1.min.js"></script>
       <script src="scripts/vendor/knockout-3.4.2.js"></script>
-      <script src="scripts/app.js"></script>
+      <script defer="defer" src="scripts/app.js"></script>
     </body>
 </html>
 
