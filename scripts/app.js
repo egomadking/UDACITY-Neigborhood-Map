@@ -135,7 +135,6 @@
     });
 
     // IIFE to place POI on map
-    
     (function(){
       for(var i = 0; i < self.staticPoints().length; i++){
           geoFetch(self.staticPoints()[i]);
