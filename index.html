@@ -23,14 +23,15 @@
               <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleCafeFilter"><img src="assets/coffee.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showCafe() === false}"></button>
               <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleDessertFilter"><img src="assets/dessert.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showDessert() === false}"></button>
           </div>
+          <!--
           <div class="l-sidebar__search" data-bind="css : {'l-sidebar__search--is-toggled': isSidebarActive}">
             <form>
               <input type="text" class="c-sidebar__search-field" placeholder="Search within listed items">
               <button type="button" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-            </form> <!-- still need to work with the search -->
-          </div>
+            </form>
+          </div> -->
           <div class="l-sidebar__results" >
-
+            <!--
             <ul class="c-sidebar__results" data-bind="foreach: staticDining">
               <li class="c-sidebar__results__entry" data-bind="visible: $parent.showDining">
                 <a href="#" data-bind="text: name"></a>
@@ -45,11 +46,11 @@
               <li class="c-sidebar__results__entry" data-bind="visible: $parent.showDessert">
                   <a href="#" data-bind="text: name"></a>
               </li>
-            </ul>
-            
-            <!-- <ul class="c-sidebar__results" data-bind="foreach: staticPoints">
-              <li class="c-sidebar__results__entry" data-bind="text: name, css: type"></li>
             </ul> -->
+            
+            <ul class="c-sidebar__results" data-bind="foreach: listItemsToShow">
+              <li class="c-sidebar__results__entry" data-bind="text: name"></li>
+            </ul>
           </div>
           
           
@@ -59,23 +60,23 @@
       <script>
         var map;
         function initMap() {
-          var originalMapCenter = new google.maps.LatLng(32.068, -81.093);
+          var originalMapCenter = new google.maps.LatLng(32.072, -81.093);
           map = new google.maps.Map(document.getElementById('map'), {
             center: originalMapCenter,
             zoom: 15
           });
           //var geocoder = new google.maps.Geocoder();
           map.addListener('click', function() {
-            map.panTo(originalMapCenter);
+            //nothing
           });
-        }
+        }        
 
       </script>
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&&libraries=places&callback=initMap"
+      <script async defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&&libraries=places&callback=initMap"
     async defer></script>
       <script src="scripts/vendor/jquery-3.2.1.min.js"></script>
       <script src="scripts/vendor/knockout-3.4.2.js"></script>
-      <script defer="defer" src="scripts/app.js"></script>
+      <script src="scripts/app.js"></script>
     </body>
 </html>
 
