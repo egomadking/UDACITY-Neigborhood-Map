@@ -3,9 +3,29 @@
 
   // model
 
+  function loadScript() {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&&libraries=places&callback=initMap';
+    document.body.appendChild(script);
+  }
+  window.onload = loadScript;
+
   
 
   var map;
+  function initMap() {
+    var originalMapCenter = new google.maps.LatLng(32.072, -81.093);
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: originalMapCenter,
+      zoom: 15
+    });
+    //var geocoder = new google.maps.Geocoder();
+    map.addListener('click', function() {
+      //nothing
+    });
+  }
+
   var markers = [];
 
   var geoFetch = function(point){
@@ -80,9 +100,13 @@
       {name: 'River Street Sweets', address: '13 E River St', type: 'dessert'}
     ]);
 
-    for(var i = 0; i < self.staticPoints().length; i++){
-      geoFetch(self.staticPoints()[i]);
-    }    
+    var loadPoints = function() {
+      for(var i = 0; i < self.staticPoints().length; i++){
+        geoFetch(self.staticPoints()[i]);
+      }
+    };
+
+    window.onload = loadPoints();
 
     // filter toggles show/hide categories of POI
     self.showDining = ko.observable(true);
