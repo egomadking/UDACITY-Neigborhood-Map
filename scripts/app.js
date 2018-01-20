@@ -9,9 +9,15 @@
     script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&&libraries=places&callback=initMap';
     document.body.appendChild(script);
   }
-  window.onload = loadScript;
-
+  window.onload = function() {
+    loadScript();
+  };
   
+  // called in ititMap so that google exists
+  // before bindings applied.
+  var applyBindings = function() {
+    ko.applyBindings(new ViewModel());
+  };
 
   var map;
   function initMap() {
@@ -24,6 +30,8 @@
     map.addListener('click', function() {
       //nothing
     });
+    // applies KO bindings after GoogleJSAPI
+    applyBindings();
   }
 
   var markers = [];
@@ -179,6 +187,6 @@
     
 
   };
-  ko.applyBindings(new ViewModel());
+  
 
 //});
