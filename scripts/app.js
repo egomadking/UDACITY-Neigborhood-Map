@@ -161,7 +161,46 @@ function populateInfoWindow(marker, infowindow) {
 	}
 }
 
-  // Yelp reviews API calls    
+var yelpAPIKey = 'sr0XSlQVdsqk0xoU2jg7X66Id860qeHI8cPd1L1ZEd4quDna3PWr7iLh6XYB9mKZQxOleaVizotJEpE01vlXhgu0jvXyqKEwFd5SZXbrTCNulttoNVGaIgJHCltlWnYx';
+
+// makes names URL-friendly
+var replaceChars = function(name) {
+  name = name.replace(/\s+/g, '-');
+  name = name.replace(/\&/g, 'and');
+  name = name.replace(/(\')|(\,)/g, '');
+  name = name.toLowerCase();
+  return name;
+}
+
+var searchYelpURL = function(marker) {
+  var yelpBaseURL = 'https://api.yelp.com/v3/businesses/search?term=';
+  var name = replaceChars(marker.name);
+  //var address = replaceChars(marker.address);
+  return yelpBaseURL+name+'&location=savannah';
+}
+
+var consumeYelpSearchURL = function(url) {
+  var basic = 'Basic ' + yelpAPIKey;
+  $.ajax({
+    url: url,
+    success: function(json) {
+      //
+      // this needs to do something with JSON
+      // should I use this or a .done centipede?
+      console.log('Success', json);
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert(textStatus, errorThrown);
+    },
+    headers: {'Authorization': basic}
+  })
+}
+
+var retrieveYelpBusiness = function(marker) {
+  // only use Yelp serch API if not been used yet
+  if(!marker.yelpId){}
+
+}
 
 ko.extenders.dinnerItemsToShow = function(target, option) {
   target.subscribe(function(newValue) {
