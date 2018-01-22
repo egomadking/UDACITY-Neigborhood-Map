@@ -165,8 +165,11 @@ div#pano {
   }
 
   .l-sidebar--is-toggled {
+    display: none;
+    /*
     width: 0;
     transition-duration: 150ms;
+    */
   }
 
   .l-sidebar__filter {
