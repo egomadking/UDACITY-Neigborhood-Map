@@ -132,6 +132,11 @@ form {
   height: 100%
 }
 
+div#pano {
+  width: 450px;
+  height: 300px;
+}
+
 /* media queries */
 
 /* 800 px tighten up sidebar */
@@ -203,6 +208,11 @@ form {
     padding: .5em;
   }
 
+  div#pano {
+    width: 250px;
+    height: 400px;
+  }
+
 }
 
 /* 650 collapsible sidebar, shrink h1 */
@@ -216,6 +226,11 @@ form {
   }
   .l-sidebar__results {
     margin: 1px 1px 1px 0;
+  }
+
+  div#pano {
+    width: 250px;
+    height: 300px;
   }
   
 }
