@@ -23,43 +23,16 @@
               <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleCafeFilter"><img src="assets/coffee.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showCafe() === false}"></button>
               <button type="button" class="c-sidebar__filter__toggle" data-bind="click: toggleDessertFilter"><img src="assets/dessert.svg" data-bind="css: {'c-sidebar__filter__toggle--is-toggled' : showDessert() === false}"></button>
           </div>
-          <!--
-          <div class="l-sidebar__search" data-bind="css : {'l-sidebar__search--is-toggled': isSidebarActive}">
-            <form>
-              <input type="text" class="c-sidebar__search-field" placeholder="Search within listed items">
-              <button type="button" class="c-sidebar__search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-            </form>
-          </div> -->
           <div class="l-sidebar__results" >
-            <!--
-            <ul class="c-sidebar__results" data-bind="foreach: staticDining">
-              <li class="c-sidebar__results__entry" data-bind="visible: $parent.showDining">
-                <a href="#" data-bind="text: name"></a>
-              </li>
-            </ul>
-            <ul class="c-sidebar__results" data-bind="foreach: staticCafe">
-              <li class="c-sidebar__results__entry" data-bind="visible: $parent.showCafe">
-                  <a href="#" data-bind="text: name"></a>
-              </li>
-            </ul>
-            <ul class="c-sidebar__results" data-bind="foreach: staticDessert">
-              <li class="c-sidebar__results__entry" data-bind="visible: $parent.showDessert">
-                  <a href="#" data-bind="text: name"></a>
-              </li>
-            </ul> -->
-            
             <ul class="c-sidebar__results" data-bind="foreach: listItemsToShow">
-              <li class="c-sidebar__results__entry" data-bind="text: name"></li>
+              <li class="c-sidebar__results__entry" data-bind="click: listItemsMarkerToggle($data.name, event)">
+                <span data-bind="text: name"></span>
+              </li>
             </ul>
           </div>
-          
-          
         </div>
         <div id="map" class="c-map"></div>
       </main>
-      <!-- <script></script> initMap placeholder -->
-      <!-- <script async type="text/javascript" src="" googleapis line-->
-    async defer></script>
       <script src="scripts/vendor/jquery-3.2.1.min.js"></script>
       <script src="scripts/vendor/knockout-3.4.2.js"></script>
       <script src="scripts/app.js"></script>
