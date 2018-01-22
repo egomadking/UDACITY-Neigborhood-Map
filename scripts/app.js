@@ -170,19 +170,21 @@ var replaceChars = function(name) {
   name = name.replace(/(\')|(\,)/g, '');
   name = name.toLowerCase();
   return name;
-}
+};
 
 var searchYelpURL = function(marker) {
   var yelpBaseURL = 'https://api.yelp.com/v3/businesses/search?term=';
   var name = replaceChars(marker.name);
   //var address = replaceChars(marker.address);
   return yelpBaseURL+name+'&location=savannah';
-}
+};
 
 var consumeYelpSearchURL = function(url) {
   var basic = 'Basic ' + yelpAPIKey;
   $.ajax({
+    type: 'GET',
     url: url,
+    dataTye: 'json',
     success: function(json) {
       //
       // this needs to do something with JSON
@@ -193,14 +195,14 @@ var consumeYelpSearchURL = function(url) {
       alert(textStatus, errorThrown);
     },
     headers: {'Authorization': basic}
-  })
-}
+  });
+};
 
 var retrieveYelpBusiness = function(marker) {
   // only use Yelp serch API if not been used yet
   if(!marker.yelpId){}
 
-}
+};
 
 ko.extenders.dinnerItemsToShow = function(target, option) {
   target.subscribe(function(newValue) {
