@@ -69,7 +69,7 @@ var listItemsMarkerToggle = function(name, event) {
 // creates new markers and pushes them into markers[]
 var geoFetch = function(point){
   var name = point.name;
-  address = point.address + ' Savannah, GA';
+  var address = point.address + ' Savannah, GA';
   var geocoder = new google.maps.Geocoder();
   geocoder.geocode({'address': address}, function(results, status){
     if (status === 'OK') {
@@ -86,7 +86,7 @@ var geoFetch = function(point){
       var infowindowClick = new google.maps.InfoWindow({
         content: ''
         //
-        // insert yelp review info here?
+        // insert foursquare review info here?
         //
       });
 
@@ -161,7 +161,13 @@ function populateInfoWindow(marker, infowindow) {
 	}
 }
 
-var yelpAPIKey = 'sr0XSlQVdsqk0xoU2jg7X66Id860qeHI8cPd1L1ZEd4quDna3PWr7iLh6XYB9mKZQxOleaVizotJEpE01vlXhgu0jvXyqKEwFd5SZXbrTCNulttoNVGaIgJHCltlWnYx';
+//
+// FourSquare Functionality
+//
+
+var fourSqClientID = 'EZSBPUVTQ1AQJSGEU3K35EP0L1GQAPC2ETGGPK24FUAKV4LJ';
+var fourSqClientSecret = 'XMIPDO0YWVMXHMRDA2YNJXZYEGMVY5RPN3C4Z12TICUL532O';
+var fourSqV = '20180122';
 
 // makes names URL-friendly
 var replaceChars = function(name) {
@@ -172,35 +178,47 @@ var replaceChars = function(name) {
   return name;
 };
 
-var searchYelpURL = function(marker) {
-  var yelpBaseURL = 'https://api.yelp.com/v3/businesses/search?term=';
+var createFourSqSearchURL = function(marker) {
+  var baseURL = 'https://api.foursquare.com/v2/venues/search?near=savannah&query=';
   var name = replaceChars(marker.name);
-  //var address = replaceChars(marker.address);
-  return yelpBaseURL+name+'&location=savannah';
+  return baseURL+name+'&client_id='+fourSqClientID+
+    '&client_secret='+fourSqClientSecret+'&v='+fourSqV;
 };
 
-var consumeYelpSearchURL = function(url) {
-  var basic = 'Basic ' + yelpAPIKey;
-  $.ajax({
-    type: 'GET',
-    url: url,
-    dataTye: 'json',
+var searchFourSq = function(marker) {
+  var settings = {
+    "async": true,
+    "url": createFourSqSearchURL(marker),
+    "method": "GET",
     success: function(json) {
+      marker.fourSqId = json.response.venues[0].id;
       //
-      // this needs to do something with JSON
-      // should I use this or a .done centipede?
-      console.log('Success', json);
+      //nested ajax function to get all the items for the fourSquare details
+      //
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
       alert(textStatus, errorThrown);
-    },
-    headers: {'Authorization': basic}
+    }
+  };
+  $.ajax(settings).done(function (response) {
   });
 };
 
-var retrieveYelpBusiness = function(marker) {
+var fetchFourSqDetailsURL = function(marker) {
+  var baseUrl = 'https://api.foursquare.com/v2/venues/';
+  return baseUrl+marker.fourSqId+'&client_id='+fourSqClientID+
+  '&client_secret='+fourSqClientSecret+'&v='+fourSqV;
+};
+
+var fetchFourSqBusiness = function(marker) {
   // only use Yelp serch API if not been used yet
-  if(!marker.yelpId){}
+  if(!marker.fourSqId){
+    searchFourSq(marker);
+  } else {
+    //
+    //nested ajax function to get all the items for the fourSquare details
+    //
+  }
 
 };
 
