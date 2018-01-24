@@ -137,6 +137,21 @@ div#pano {
   height: 300px;
 }
 
+#l-map__fourSq {
+  border: 3px solid rgb(230,88,120);
+  border-radius: 10px;
+  margin: .5em;
+  padding: .5em .5em;
+}
+
+#fourSqImg {
+  border-radius: 5px;
+  float: right;
+  height: 35px;
+  width: 35px;
+
+}
+
 /* media queries */
 
 /* 800 px tighten up sidebar */
@@ -233,7 +248,22 @@ div#pano {
 
   div#pano {
     width: 375px;
-    height: 400px;
+    height: 200px;
+  }
+
+  div.gm-style-iw > div > div > h1 {
+    font-size: 1.6em;
+  }
+
+  div.gm-style-iw > div > div > h2 {
+    font-size: 1.2em;
+  }
+
+  #l-map__fourSq {
+
+    border-radius: 5px;
+    margin: 0.2em;
+    padding: 0.2em;
   }
   
 }
