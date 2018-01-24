@@ -1,6 +1,6 @@
 # UDACITY-Neigborhood-Map
 
-Savannah Neighborhood map app built in KnockoutJS and jQuery using Google, Yelp, and TripAdvisor APIs 
+Savannah Neighborhood map app built in KnockoutJS and jQuery using Google and FourSquare APIs. 
 
 ## Project Overview
 
