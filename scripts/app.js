@@ -16,6 +16,8 @@ var applyBindings = function() {
 };
 
 var map;
+var markers = [];
+var infowindowClick = null;
 
 // callback for google api that adds in map.
 // also applies KO bindinds
@@ -28,9 +30,6 @@ function initApp() {
   // applies KO bindings after Google JS API
   applyBindings();
 }
-
-// globally accessible array for map markers
-var markers = [];
 
 // Uses the name passed from clicked KO-created list item
 // to briefly bounce corresponding map marker and
@@ -66,7 +65,8 @@ var listItemsMarkerToggle = function(name, event) {
     
 };
 
-// creates new markers and pushes them into markers[]
+// creates new markers and pushes them into markers array
+// fed by loadPoints() in KO ViewModel
 var geoFetch = function(point){
   var name = point.name;
   var address = point.address + ' Savannah, GA';
@@ -79,15 +79,13 @@ var geoFetch = function(point){
         animation: google.maps.Animation.DROP,
         position: results[0].geometry.location
       });
+      //hover infowindow
       var infowindowOver = new google.maps.InfoWindow({
         content: name
       });
-
-      var infowindowClick = new google.maps.InfoWindow({
+      //infowindow that opens on click
+      infowindowClick = new google.maps.InfoWindow({
         content: ''
-        //
-        // insert foursquare review info here?
-        //
       });
 
       marker.type = point.type;
@@ -96,7 +94,6 @@ var geoFetch = function(point){
 
       marker.addListener('click', function() {
         infowindowOver.close(map, marker);
-        //infowindowClick.open(map, marker);
         populateInfoWindow(marker, infowindowClick);
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function(){ marker.setAnimation(null); }, 700);
@@ -123,8 +120,8 @@ var geoFetch = function(point){
     }
   });
 };
-//places panorama into infowindow. Adapted from
-//Udacity Google APIs course
+// places panorama and FourSquare contentinto infowindow.
+// Adapted from Udacity Google APIs course
 function populateInfoWindow(marker, infowindow) {
 	if (infowindow.marker != marker) {
 		infowindow.setContent('');
@@ -132,33 +129,33 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.addListener('closeclick', function() {
           infowindow.marker = null;
         });
-		var streetSvc = new google.maps.StreetViewService();
-		var radius = 50;
+    var streetSvc = new google.maps.StreetViewService();
+    var radius = 50;
 
-		var getStreetView = function(data, status) {
-			if(status == google.maps.StreetViewStatus.OK) {
-				var nearLocation = data.location.latLng;
-				var heading = google.maps.geometry.spherical.computeHeading(nearLocation, marker.position);
-				infowindow.setContent('<h1>' + marker.name + '</h1><div id="pano"></div><h2>' + 
-					marker.address + '</h2>');
-				var panoramaOptions = {
-					position: nearLocation,
-					pov: {
-						heading: heading,
-						pitch: 10
-			        }
-			    };
-			    var panorama = new google.maps.StreetViewPanorama(
-			    	document.getElementById('pano'), panoramaOptions);
-			} else {
-				infowindow.setContent('<div>' + marker.name + '</div><div>No Street View Found</div>');
-			}
-		};
+    var getStreetView = function(data, status) {
+      if(status == google.maps.StreetViewStatus.OK) {
+        var nearLocation = data.location.latLng;
+        var heading = google.maps.geometry.spherical.computeHeading(nearLocation, marker.position);
+        infowindow.setContent('<h1>' + marker.name + '</h1><div id="pano"></div><h2>' + 
+          marker.address + '</h2>');
+        var panoramaOptions = {
+          position: nearLocation,
+          pov: {
+            heading: heading,
+            pitch: 10
+              }
+          };
+          var panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('pano'), panoramaOptions);
+      } else {
+        infowindow.setContent('<div>' + marker.name + '</div><div>No Street View Found</div>');
+      }
+    };
 
-		streetSvc.getPanoramaByLocation(marker.position, radius, getStreetView);
-
-		infowindow.open(map, marker);
-	}
+    streetSvc.getPanoramaByLocation(marker.position, radius, getStreetView);
+    infowindow.open(map, marker);
+    fetchFourSqBusiness(marker);
+  }
 }
 
 //
@@ -178,23 +175,27 @@ var replaceChars = function(name) {
   return name;
 };
 
-var createFourSqSearchURL = function(marker) {
+// creates URL used to retrieve venue ID
+var makeFourSqSearchURL = function(marker) {
   var baseURL = 'https://api.foursquare.com/v2/venues/search?near=savannah&query=';
   var name = replaceChars(marker.name);
   return baseURL+name+'&client_id='+fourSqClientID+
     '&client_secret='+fourSqClientSecret+'&v='+fourSqV;
 };
 
+// consumes search URl, provides UI update for slow load
 var searchFourSq = function(marker) {
   var settings = {
-    "async": true,
-    "url": createFourSqSearchURL(marker),
-    "method": "GET",
+    'async': true,
+    'url': makeFourSqSearchURL(marker),
+    'method': 'GET',
+    beforeSend: function() {
+      $('.gm-style-iw').append('<h3 class="forSqSearch">Searching Foursquare...</h3>');
+    },
     success: function(json) {
       marker.fourSqId = json.response.venues[0].id;
-      //
-      //nested ajax function to get all the items for the fourSquare details
-      //
+      $('.gm-style-iw > h3').remove();
+      fetchFourSqContent(marker);
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
       alert(textStatus, errorThrown);
@@ -204,24 +205,61 @@ var searchFourSq = function(marker) {
   });
 };
 
-var fetchFourSqDetailsURL = function(marker) {
+// creates URL used to retrieve venue content
+var makeFourSqDetailsURL = function(marker) {
   var baseUrl = 'https://api.foursquare.com/v2/venues/';
-  return baseUrl+marker.fourSqId+'&client_id='+fourSqClientID+
+  return baseUrl+marker.fourSqId+'?&client_id='+fourSqClientID+
   '&client_secret='+fourSqClientSecret+'&v='+fourSqV;
 };
 
+// consumes content URL and populates infowindow under panorama
+var fetchFourSqContent = function(marker) {
+  var settings = {
+    'async': true,
+    'url': makeFourSqDetailsURL(marker),
+    'method': 'GET',
+    beforeSend: function() {
+      $('.gm-style-iw').append('<h3 class="forSqSearch">Loading Foursquare Content...</h3>');
+    },
+    success: function(json) {
+      var mobileUrl;
+      var rating = json.response.venue.rating;
+      rating = rating+'/10 with '+json.response.venue.ratingSignals+' ratings.';
+      $('.gm-style-iw > h3').remove();
+      $('.gm-style-iw').append('<div id="l-map__fourSq"></div>');
+      $('#l-map__fourSq').append('<img id=fourSqImg src="/assets/fourSq.png">');
+      $('#l-map__fourSq').append('<h2>'+rating+'</h2>');
+      if(json.response.venue.hasMenu) {
+        mobileUrl = json.response.venue.menu.mobileUrl;
+        mobileUrl = '<h3><a href ="'+mobileUrl+'" target="_blank">Link to '+marker.name+'\'s menu</a></h3>';
+      } else {
+        mobileUrl = '<p>No menu found</p>';
+      }
+      $('#l-map__fourSq').append(mobileUrl);
+      //grab some interesting stuffs
+      //put them into the infowindow
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      alert(textStatus, errorThrown);
+    }
+  };
+  $.ajax(settings).done(function(response) {
+    
+  });
+};
+
+//determines if venue ID is locally stored
 var fetchFourSqBusiness = function(marker) {
-  // only use Yelp serch API if not been used yet
+  // only use FourSquare serch API if not been used yet
   if(!marker.fourSqId){
     searchFourSq(marker);
   } else {
-    //
-    //nested ajax function to get all the items for the fourSquare details
-    //
+    fetchFourSqContent(marker);
   }
 
 };
 
+//KO extenders used to show/hide markers on map based on POI filter
 ko.extenders.dinnerItemsToShow = function(target, option) {
   target.subscribe(function(newValue) {
     for(var i = 0; i < markers.length; i++) {
@@ -259,7 +297,7 @@ var ViewModel = function() {
 
   var self = this;
 
-  //observable array per category of POI
+  //observable array containing all POI
   self.staticPoints = ko.observableArray([
     {name: 'Cotton & Rye', address: '1801 Habersham St', type: 'dining'},
     {name: "Tequila's Town Mexican", address: '109 Whitaker Street', type: 'dining'},
@@ -274,6 +312,7 @@ var ViewModel = function() {
     {name: 'River Street Sweets', address: '13 E River St', type: 'dessert'}
   ]);
 
+  // uses geoFetch to load points on map
   var loadPoints = function() {
     for(var i = 0; i < self.staticPoints().length; i++){
       geoFetch(self.staticPoints()[i]);
@@ -281,7 +320,7 @@ var ViewModel = function() {
   };
   window.onload = loadPoints();
 
-  // filter toggles show/hide categories of POI
+  // filter toggles used to show/hide categories of POI on sidebar
   self.showDining = ko.observable(true).extend({dinnerItemsToShow: "point"});
   self.toggleDiningFilter = function() {
     self.showDining(!self.showDining());
@@ -301,7 +340,7 @@ var ViewModel = function() {
     self.isSidebarActive(!self.isSidebarActive());
   };
 
-
+  // determines which POI show on sidebar
   self.listItemsToShow = ko.computed(function() {
     return ko.utils.arrayFilter(self.staticPoints(), function(point) {
       if(self.showDining()){
