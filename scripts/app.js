@@ -2,6 +2,9 @@
 function loadScript() {
   var script = document.createElement('script');
   script.type = 'text/javascript';
+  script.async = true;
+  script.defer = true;
+  script.onerror = function (event){alert(event.type);};
   script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAHFXxlZ9f8tSwrIPQlhRqpW_UzSlSYyDU&libraries=places,geometry&callback=initApp';
   document.body.appendChild(script);
 }
@@ -34,7 +37,7 @@ function initApp() {
 // Uses the name passed from clicked KO-created list item
 // to briefly bounce corresponding map marker and
 // open an infoWindow panel. Would use index of
-// index of staticPoints in ViewModel but have not
+// staticPoints in ViewModel but have not
 // found a way to reference it.
 var listItemsMarkerToggle = function(name, event) {
   if(event){
@@ -52,6 +55,11 @@ var listItemsMarkerToggle = function(name, event) {
       var infoWindow = new google.maps.InfoWindow({
         content: name
       });
+      //
+      // review requirements
+      // insert FourSquare functionality
+      // to display content in infowindow
+      //
       infoWindow.open(map, markers[target]);
       setTimeout(function(){
         infoWindow.close(map, markers[target]);
@@ -136,6 +144,10 @@ function populateInfoWindow(marker, infowindow) {
       if(status == google.maps.StreetViewStatus.OK) {
         var nearLocation = data.location.latLng;
         var heading = google.maps.geometry.spherical.computeHeading(nearLocation, marker.position);
+        //
+        // I need to move this setContent() out of getStreetView
+        // and combine it with the results of fetchFourSqBusiness()
+        //
         infowindow.setContent('<h1>' + marker.name + '</h1><div id="pano"></div><h2>' + 
           marker.address + '</h2>');
         var panoramaOptions = {
@@ -148,6 +160,8 @@ function populateInfoWindow(marker, infowindow) {
           var panorama = new google.maps.StreetViewPanorama(
             document.getElementById('pano'), panoramaOptions);
       } else {
+        // turn this into a forwarding error- need a div with  proper width so 
+        // FourSquare content still shows
         infowindow.setContent('<div>' + marker.name + '</div><div>No Street View Found</div>');
       }
     };
@@ -189,12 +203,8 @@ var searchFourSq = function(marker) {
     'async': true,
     'url': makeFourSqSearchURL(marker),
     'method': 'GET',
-    beforeSend: function() {
-      $('.gm-style-iw').append('<h3 class="forSqSearch">Searching Foursquare...</h3>');
-    },
     success: function(json) {
       marker.fourSqId = json.response.venues[0].id;
-      $('.gm-style-iw > h3').remove();
       fetchFourSqContent(marker);
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -218,14 +228,10 @@ var fetchFourSqContent = function(marker) {
     'async': true,
     'url': makeFourSqDetailsURL(marker),
     'method': 'GET',
-    beforeSend: function() {
-      $('.gm-style-iw').append('<h3 class="forSqSearch">Loading Foursquare Content...</h3>');
-    },
     success: function(json) {
       var mobileUrl;
       var rating = json.response.venue.rating;
       rating = rating+'/10 with '+json.response.venue.ratingSignals+' ratings.';
-      $('.gm-style-iw > h3').remove();
       $('.gm-style-iw').append('<div id="l-map__fourSq"></div>');
       $('#l-map__fourSq').append('<img id=fourSqImg src="/assets/fourSq.png">');
       $('#l-map__fourSq').append('<h2>'+rating+'</h2>');
@@ -236,8 +242,6 @@ var fetchFourSqContent = function(marker) {
         mobileUrl = '<p>No menu found</p>';
       }
       $('#l-map__fourSq').append(mobileUrl);
-      //grab some interesting stuffs
-      //put them into the infowindow
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
       alert(textStatus, errorThrown);
