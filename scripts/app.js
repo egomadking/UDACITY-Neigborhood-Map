@@ -233,7 +233,7 @@ var fetchFourSqContent = function(marker) {
       var rating = json.response.venue.rating;
       rating = rating+'/10 with '+json.response.venue.ratingSignals+' ratings.';
       $('.gm-style-iw').append('<div id="l-map__fourSq"></div>');
-      $('#l-map__fourSq').append('<img id=fourSqImg src="/assets/fourSq.png">');
+      $('#l-map__fourSq').append('<img id=fourSqImg src="https://raw.githubusercontent.com/egomadking/UDACITY-Neigborhood-Map/master/assets/fourSq.png">');
       $('#l-map__fourSq').append('<h2>'+rating+'</h2>');
       if(json.response.venue.hasMenu) {
         mobileUrl = json.response.venue.menu.mobileUrl;
