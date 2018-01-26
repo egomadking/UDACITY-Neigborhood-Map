@@ -21,6 +21,7 @@ var applyBindings = function() {
 var map;
 var markers = [];
 var infowindowClick = null;
+var fourSqareImg = '<img id="fourSqImg" src="https://raw.githubusercontent.com/egomadking/UDACITY-Neigborhood-Map/master/assets/fourSq.png" alt="FourSquare Logo">';
 
 // callback for google api that adds in map.
 // also applies KO bindinds
@@ -53,24 +54,18 @@ var listItemsMarkerToggle = function(name, event) {
         }
       });
       var infoWindow = new google.maps.InfoWindow({
-        content: name
+        content: '<h2>'+name+'</h2>' + markers[target].fourSqExpanded
       });
-      //
-      // review requirements
-      // insert FourSquare functionality
-      // to display content in infowindow
-      //
       infoWindow.open(map, markers[target]);
       setTimeout(function(){
         infoWindow.close(map, markers[target]);
-      }, 2100);
+      }, 2800);
       markers[target].setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(function(){
         markers[target].setAnimation(null); 
-      }, 2100);
+      }, 2800);
     }
   }
-    
 };
 
 // creates new markers and pushes them into markers array
@@ -99,6 +94,8 @@ var geoFetch = function(point){
       marker.type = point.type;
       marker.name = point.name;
       marker.address = address;
+      // fetches all FourSquare content for POI
+      fetchFourSqBusiness(marker);
 
       marker.addListener('click', function() {
         infowindowOver.close(map, marker);
@@ -116,7 +113,6 @@ var geoFetch = function(point){
           } else {
             infowindowOver.open(map, marker);
           }
-        
       });
 
       marker.addListener('mouseout', function() {
@@ -139,17 +135,13 @@ function populateInfoWindow(marker, infowindow) {
         });
     var streetSvc = new google.maps.StreetViewService();
     var radius = 50;
-
+    
     var getStreetView = function(data, status) {
       if(status == google.maps.StreetViewStatus.OK) {
         var nearLocation = data.location.latLng;
         var heading = google.maps.geometry.spherical.computeHeading(nearLocation, marker.position);
-        //
-        // I need to move this setContent() out of getStreetView
-        // and combine it with the results of fetchFourSqBusiness()
-        //
         infowindow.setContent('<h1>' + marker.name + '</h1><div id="pano"></div><h2>' + 
-          marker.address + '</h2>');
+          marker.address + '</h2>' + marker.fourSqExpanded);
         var panoramaOptions = {
           position: nearLocation,
           pov: {
@@ -165,10 +157,8 @@ function populateInfoWindow(marker, infowindow) {
         infowindow.setContent('<div>' + marker.name + '</div><div>No Street View Found</div>');
       }
     };
-
     streetSvc.getPanoramaByLocation(marker.position, radius, getStreetView);
     infowindow.open(map, marker);
-    fetchFourSqBusiness(marker);
   }
 }
 
@@ -229,38 +219,35 @@ var fetchFourSqContent = function(marker) {
     'url': makeFourSqDetailsURL(marker),
     'method': 'GET',
     success: function(json) {
-      var mobileUrl;
-      var rating = json.response.venue.rating;
-      rating = rating+'/10 with '+json.response.venue.ratingSignals+' ratings.';
-      $('.gm-style-iw').append('<div id="l-map__fourSq"></div>');
-      $('#l-map__fourSq').append('<img id=fourSqImg src="https://raw.githubusercontent.com/egomadking/UDACITY-Neigborhood-Map/master/assets/fourSq.png">');
-      $('#l-map__fourSq').append('<h2>'+rating+'</h2>');
+      marker.rating = json.response.venue.rating;
+      marker.rating= '<h2>'+marker.rating+'/10 with '+json.response.venue.ratingSignals+' ratings.</h2>';
       if(json.response.venue.hasMenu) {
-        mobileUrl = json.response.venue.menu.mobileUrl;
-        mobileUrl = '<h3><a href ="'+mobileUrl+'" target="_blank">Link to '+marker.name+'\'s menu</a></h3>';
+        marker.mobileUrl = json.response.venue.menu.mobileUrl;
+        marker.mobileUrl = '<h3><a href ="'+marker.mobileUrl+'" target="_blank">Link to '+
+        marker.name+'\'s menu</a></h3>';
       } else {
-        mobileUrl = '<p>No menu found</p>';
+        marker.mobileUrl = '<p>No menu found</p>';
       }
-      $('#l-map__fourSq').append(mobileUrl);
+      marker.fourSqExpanded =  '<div id="l-map__fourSq">'+
+      fourSqareImg+marker.rating+marker.mobileUrl+'</div>';
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
       alert(textStatus, errorThrown);
     }
   };
-  $.ajax(settings).done(function(response) {
-    
+  $.ajax(settings).done(function(json) {
   });
 };
 
 //determines if venue ID is locally stored
-var fetchFourSqBusiness = function(marker) {
+// assembler is 'compact' or 'expanded' 
+var fetchFourSqBusiness = function(marker, assembler) {
   // only use FourSquare serch API if not been used yet
   if(!marker.fourSqId){
     searchFourSq(marker);
   } else {
     fetchFourSqContent(marker);
   }
-
 };
 
 //KO extenders used to show/hide markers on map based on POI filter
